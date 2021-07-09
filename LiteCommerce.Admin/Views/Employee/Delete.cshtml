@@ -1,0 +1,56 @@
+﻿@model LiteCommerce.DomainModels.Employee
+@{
+    Layout = null;
+}
+
+<form class="form-horizontal" id="formSaveInput" onsubmit="return (confirmDeleteEmployee(@Model.EmployeeID));">
+    <div class="form-group">
+        <label class="col-md-1"></label>
+        <div class="col-sm-11">
+            <p class="form-control-static">&emsp;&emsp;<img src="@Model.Photo" width="120" height="120"></p>
+        </div><br />
+
+        <label class="control-label col-sm-2">Họ:</label>
+        <div class="col-sm-10">
+            <p class="form-control-static">@Model.LastName</p>
+        </div>
+
+        <label class="control-label col-sm-2">Tên:</label>
+        <div class="col-sm-10">
+            <p class="form-control-static">@Model.FirstName</p>
+        </div>
+
+        <label class="control-label col-sm-2">Ngày Sinh:</label>
+        <div class="col-sm-10">
+            <p class="form-control-static">@Model.BirthDate</p>
+        </div>
+
+        <label class="control-label col-sm-2">Email:</label>
+        <div class="col-sm-10">
+            <p class="form-control-static">@Model.Email</p>
+        </div>
+
+        <label class="control-label col-sm-2">Mật khẩu:</label>
+        <div class="col-sm-10">
+            <p class="form-control-static">@Model.Password</p>
+        </div>
+        <label class="control-label col-sm-2">Ghi chú:</label>
+        <div class="col-sm-10">
+            <p class="form-control-static">@Model.Notes</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-offset-2 col-sm-10">
+            <p class="text-danger" style="font-size:18px">
+                Bạn có chắc chắn muốn xóa nhân viên này khỏi hệ thống hay không?
+            </p>
+        </div>
+        <div class="col-lg-offset-2 col-sm-10">
+            <button class="btn btn-danger">Đồng ý xóa</button>
+            <a href="javascript:;" onclick="getEmployees()" class="btn btn-warning">Bỏ qua</a>
+        </div>
+    </div>
+</form>
+
+

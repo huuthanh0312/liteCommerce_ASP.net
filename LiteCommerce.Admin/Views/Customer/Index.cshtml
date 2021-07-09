@@ -1,0 +1,141 @@
+﻿@{
+    ViewBag.Title = "Quản lý khách hàng";
+}
+
+<!-- Form để tìm kiếm -->
+<div class="container-fluid">
+    <form id="formSearchInput">
+        <div class="input-group">
+            <input name="searchValue" type="text" class="form-control" placeholder="Nhập tên cần tìm..." value="">
+            <div class="input-group-btn">
+                <button class="btn btn-primary" type="submit">
+                    <i class="glyphicon glyphicon-search"></i> Tìm kiếm
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<br />
+<!-- Danh sách khách hàng -->
+<div id="informationCustomers" class="container-fluid"> </div>
+
+@section scripts{
+    <script>
+        function getCustomers(page) {
+            var searchCondition = $("#formSearchInput").serializeArray();
+            searchCondition.push({ name: "page", value: page });
+            $.ajax({
+                url: "/Customer/List",
+                type: "POST",
+                data: searchCondition,
+                success: function (data) {
+                    $("#informationCustomers").empty();
+                    $("#informationCustomers").html(data);
+                }
+
+            });
+        }
+        function editCustomer(id) {
+            $.ajax({
+                url: "/Customer/Edit/" + id,
+                type: "POST",
+                success: function (data) {
+                    if (data == "0") {
+                        alert("Không thể tìm thấy khách hàng trong hệ thống . Vui lòng thử lại sau!");
+                    } else {
+                        $("#informationCustomers").empty();
+                        $("#informationCustomers").html(data);
+                    }
+                }
+
+            });
+        }
+        function addCustomer() {
+            $.ajax({
+                url: "/Customer/Add",
+                type: "POST",
+                success: function (data) {
+                    $("#informationCustomers").empty();
+                    $("#informationCustomers").html(data);
+                }
+
+            });
+        }
+        function saveCustomer() {
+            document.getElementById("errorCustomerName").innerHTML = "";
+            document.getElementById("errorContactName").innerHTML = "";
+            var saveCondition = $("#formSaveInput").serializeArray();
+            var a = 0;
+            $.each(saveCondition, function (i, field) {
+                if (field.name === "CustomerName") {
+                    if (isNullOrWhitespace(field.value) === true) {
+                        $("#errorCustomerName").append("Vui lòng nhập tên khách hàng");
+                        a = 1;
+                    }    
+                }
+                if (field.name === "ContactName") {
+                    if (isNullOrWhitespace(field.value) === true) {
+                        $("#errorContactName").append("Vui lòng nhập tên giao dịch của khách hàng");
+                        a = 1;
+                    }    
+                }
+            });
+            if (a == 0) {
+                $.ajax({
+                    url: "/Customer/Save",
+                    type: "POST",
+                    data: saveCondition,
+                    success: function (data) {
+                        console.log(data);
+                        if (data == "1") {
+                            getCustomers(1);
+                        } else {
+                            alert("Lưu không thành công");
+                        }
+                    }
+                });
+            }
+            
+            return false;
+        }
+        function deleteCustomer(id) {
+            $.ajax({
+                url: "/Customer/Delete/" + id,
+                type: "GET",
+                success: function (data) {
+                    if (data == "0") {
+                        alert("Không tìm thấy khách hàng trong hệ thống . Vui lòng thử lại sau!");
+                    } else {
+                        $("#informationCustomers").empty();
+                        $("#informationCustomers").html(data);
+                    }
+                }
+            });
+        }
+        function confirmDeleteCustomer(id) {
+            $.ajax({
+                url: "/Customer/Delete/" + id,
+                type: "POST",
+                success: function (data) {
+                    console.log(data);
+                    if (data == "1") {
+                        getCustomers(1);
+                    } else {
+                        alert("Tồn tại khách hàng trong đơn hàng không thể xoá . Vui lòng thử lại sau!");
+                        getCustomers(1);
+                    }
+                }
+            });
+            return false;
+        }
+        $(document).ready(function () {
+            getCustomers(1);
+            $("#formSearchInput").submit(function (e) {
+                e.preventDefault();
+                getCustomers(1);
+            });
+        });
+        
+    </script>
+}
+

@@ -1,0 +1,310 @@
+﻿
+@{
+    ViewBag.Title = "Quản lý danh mục hàng hóa";
+}
+
+<!-- Form để tìm kiếm -->
+<div class="container-fluid">
+    <form id="formSearchInput">
+        <div class="row ">
+            <div class="col-md-6">
+                <select name="category" class="form-control">
+                    <option value="0">Tất cả loại hàng</option>
+                    <option value="1">Beverages</option>
+                    <option value="2">Condiments</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <select name="supplier" class="form-control">
+                    <option value="0">Tất cả nhà cung cấp</option>
+                    <option value="1">Etoxic Liquid</option>
+                    <option value="2">Bigfoot Breweries</option>
+                    <option value="3">Condiments</option>
+                </select>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <input name="searchValue" type="text" class="form-control" placeholder="Nhập tên cần tìm...">
+                    <div class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="glyphicon glyphicon-search"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<br />
+<div id="informationProduct" class="container-fluid">
+
+</div>
+
+@section scripts{
+    <script>
+        function getProducts(page) {
+            var searchCondition = $("#formSearchInput").serializeArray();
+            searchCondition.push({ name: "page", value: page });
+            $.ajax({
+                url: "/Product/List",
+                type: "POST",
+                data: searchCondition,
+                success: function (data) {
+                    $("#informationProduct").empty();
+                    $("#informationProduct").html(data);
+                }
+
+            });
+        }
+        function editProduct(id) {
+            $.ajax({
+                url: "/Product/Edit/" + id,
+                type: "POST",
+                success: function (data) {
+                    if (data == "0") {
+                        alert("Không thể tìm thấy mặt hàng trong hệ thống . Vui lòng thử lại sau!");
+                    } else {
+                        $("#informationProduct").empty();
+                        $("#informationProduct").html(data);
+                    }
+                }
+
+            });
+        }
+        function editProductAttributes(id) {
+
+            $.ajax({
+                url: "/Product/EditAttributes/" + id,
+                type: "POST",
+                success: function (data) {
+                    if (data == "0") {
+                        alert("Không thể tìm thấy thuộc tính mặt hàng trong hệ thống . Vui lòng thử lại sau!");
+                    } else {
+                        $("#informationProduct").empty();
+                        $("#informationProduct").html(data);
+                    }
+                }
+
+            });
+        }
+        function editProductGallery(id) {
+
+            $.ajax({
+                url: "/Product/EditGallery/" + id,
+                type: "POST",
+                success: function (data) {
+                    if (data == "0") {
+                        alert("Không thể tìm thấy thư viện hình ảnh trong hệ thống . Vui lòng thử lại sau!");
+                    } else {
+                        $("#informationProduct").empty();
+                        $("#informationProduct").html(data);
+                    }
+                }
+
+            });
+        }
+        function addProduct() {
+            $.ajax({
+                url: "/Product/Add",
+                type: "POST",
+                success: function (data) {
+                    $("#informationProduct").empty();
+                    $("#informationProduct").html(data);
+                }
+
+            });
+        }
+        function addProductAttributes(id) {
+            $.ajax({
+                url: "/Product/AddAttributes/"+id,
+                type: "POST",
+                success: function (data) {
+                    $("#informationProduct").empty();
+                    $("#informationProduct").html(data);
+                }
+
+            });
+        }
+        function addProductGallery(id) {
+            $.ajax({
+                url: "/Product/AddGallery/" + id,
+                type: "POST",
+                success: function (data) {
+                    $("#informationProduct").empty();
+                    $("#informationProduct").html(data);
+                }
+
+            });
+        }
+        function saveProduct() {
+            document.getElementById("errorProductName").innerHTML = "";
+            var saveCondition = $("#formSaveInput").serializeArray();
+            var check = 0;
+            $.each(saveCondition, function (i, field) {
+                if (field.name === "ProductName") {
+                    if (isNullOrWhitespace(field.value) === true) {
+                        $("#errorProductName").append("Vui lòng nhập tên mặt hàng!");
+                        check = 1;
+                    }
+                }
+            });
+            if (check == 0) {
+                $.ajax({
+                    url: "/Product/Save",
+                    type: "POST",
+                    data: saveCondition,
+                    success: function (data) {
+                        console.log(data);
+                        if (data == "0") {
+                            alert("Lưu không thành công");
+                        } else {
+                            editProduct(data);
+                            alert("Lưu thông tin mặt hàng thành công");
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+        function saveProductAttributes() {
+            document.getElementById("errorAttributeName").innerHTML = "";
+            document.getElementById("errorAttributeValue").innerHTML = "";
+            var saveCondition = $("#formSaveInput").serializeArray();
+            var check = 0;
+            $.each(saveCondition, function (i, field) {
+                if (field.name === "AttributeName") {
+                    if (isNullOrWhitespace(field.value) === true) {
+                        $("#errorAttributeName").append("Vui lòng thêm tên thuộc tính của mặt hàng!");
+                        check = 1;
+                    }
+                }
+                if (field.name === "AttributeValue") {
+                    if (isNullOrWhitespace(field.value) === true) {
+                        $("#errorAttributeValue").append("Vui lòng thêm giá trị thuộc tính của mặt hàng!");
+                        check = 1;
+                    }
+                }
+            });
+            if (check == 0) {
+                $.ajax({
+                    url: "/Product/SaveAttributes",
+                    type: "POST",
+                    data: saveCondition,
+                    success: function (data) {
+                        console.log(data);
+                        if (data == "0") {
+                            alert("Lưu không thành công");
+                        } else {
+                            editProduct(data);
+                            alert("Lưu thông tin thuộc tính mặt hàng thành công");
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+        function saveProductGallery(id) {
+            document.getElementById("errorPhoto").innerHTML = "";
+            var saveCondition = $("#formSaveInput").serializeArray();
+            var check = 0;
+            $.each(saveCondition, function (i, field) {
+                if (field.name === "Photo") {
+                    if (isNullOrWhitespace(field.value) === true) {
+                        $("#errorPhoto").append("Vui lòng thêm hình ảnh!");
+                        check = 1;
+                    }
+                }
+            });
+            if (check == 0) {
+                $.ajax({
+                    url: "/Product/SaveGallery/"+ id,
+                    type: "POST",
+                    data: saveCondition,
+                    success: function (data) {
+                        console.log(data);
+                        if (data == "0") {
+                            alert("Lưu không thành công");
+                        } else {
+                            editProduct(data);
+                            alert("Lưu thông tin hình ảnh mặt hàng thành công");
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+        function deleteProduct(id) {
+            $.ajax({
+                url: "/Product/Delete/" + id,
+                type: "GET",
+                success: function (data) {
+                    if (data == "0") {
+                        alert("Tồn tại đơn hàng có mặt hàng này. Vui lòng kiểm tra đơn hàng trước khi xoá !!");
+                    } else {
+                        $("#informationProduct").empty();
+                        $("#informationProduct").html(data);
+                    }
+                }
+            });
+        }
+        function confirmDeleteProduct(id) {
+            $.ajax({
+                url: "/Product/Delete/" + id,
+                type: "POST",
+                success: function (data) {
+                    if (data == "1") {
+                        getProducts(1);
+                    } else {
+                        alert("Xoá không thành công");
+                    }
+                }
+            });
+            return false;
+        }
+        function confirmDeleteProductAttributes(id) {
+            var searchCondition = $("#formDeleteAttributes").serializeArray();
+            $.ajax({
+                url: "/Product/DeleteAttributes/" + id,
+                type: "POST",
+                data: searchCondition,
+                success: function (data) {
+                    console.log(data);
+                    if (data == "0") {
+                        alert("Xoá không thành công");
+                    } else {
+                        editProduct(data);
+                    }
+                }
+            });
+            return false;
+        }
+        function confirmDeleteProductGallery(id) {
+            var searchCondition = $("#formDeleteGallery").serializeArray();
+            $.ajax({
+                url: "/Product/DeleteGallery/" + id,
+                type: "POST",
+                data: searchCondition,
+                success: function (data) {
+                    console.log(data);
+                    if (data == "0") {
+
+                        alert("Xoá không thành công");
+                    } else {
+                        editProduct(data);
+                    }
+                }
+            });
+            return false;
+        }
+        $(document).ready(function () {
+            getProducts(1);
+            $("#formSearchInput").submit(function (e) {
+                e.preventDefault();
+                getProducts(1);
+            });
+        });
+    </script>
+}

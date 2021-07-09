@@ -1,0 +1,158 @@
+﻿@{
+    ViewBag.Title = "Quản lý nhân viên";
+}
+<!-- Form để tìm kiếm -->
+<div class="container-fluid">
+    <form id="formSearchInput">
+        <div class="input-group">
+            <input name="searchValue" type="text" class="form-control" placeholder="Nhập tên cần tìm..." value="">
+            <div class="input-group-btn">
+                <button class="btn btn-primary" type="submit">
+                    <i class="glyphicon glyphicon-search"></i> Tìm kiếm
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<br />
+<!-- Danh sách nhà cung cấp -->
+<div id="informationEmployee" class="container-fluid"> </div>
+
+@section scripts{
+    <script>
+        function getEmployees(page) {
+            var searchCondition = $("#formSearchInput").serializeArray();
+            searchCondition.push({ name: "page", value: page });
+            $.ajax({
+                url: "/Employee/List",
+                type: "POST",
+                data: searchCondition,
+                success: function (data) {
+                    $("#informationEmployee").empty();
+                    $("#informationEmployee").html(data);
+                }
+
+            });
+        }
+        function editEmployee(id) {
+            $.ajax({
+                url: "/Employee/Edit/" + id,
+                type: "POST",
+                success: function (data) {
+                    if (data == "0") {
+                        alert("Không thể tìm thấy nhà cung cấp trong hệ thống . Vui lòng thủ lại sau!");
+                    } else {
+                        $("#informationEmployee").empty();
+                        $("#informationEmployee").html(data);
+                    }
+                }
+
+            });
+        }
+        function addEmployee() {
+            $.ajax({
+                url: "/Employee/Add",
+                type: "POST",
+                success: function (data) {
+                    $("#informationEmployee").empty();
+                    $("#informationEmployee").html(data);
+                }
+
+            });
+        }
+        function saveEmployee() {
+            document.getElementById("errorLastName").innerHTML = "";
+            document.getElementById("errorFirstName").innerHTML = "";
+            document.getElementById("errorBirthDate").innerHTML = "";
+            document.getElementById("errorEmail").innerHTML = "";
+            document.getElementById("errorPassword").innerHTML = "";
+            var saveCondition = $("#formSaveInput").serializeArray();
+            var check = 0;
+            $.each(saveCondition, function (i, field) {
+                if (field.name === "LastName") {
+                    if (isNullOrWhitespace(field.value) === true) {
+                        $("#errorLastName").append("Vui lòng nhập họ của nhân viên !");
+                        check = 1;
+                    }
+                }
+                if (field.name === "FirstName") {
+                    if (isNullOrWhitespace(field.value) === true) {
+                        $("#errorFirstName").append("Vui lòng nhập tên của nhân viên !");
+                        check = 1;
+                    }
+                }
+                if (field.name === "BirthDate") {
+                    if (isNullOrWhitespace(field.value) === true || field.value === "1/1/0001 12:00:00 AM") {
+                        $("#errorBirthDate").append("Vui lòng thêm ngày sinh nhân viên!");
+                        check = 1;
+                    }
+                }
+                if (field.name === "Email") {
+                    if (isNullOrWhitespace(field.value) === true) {
+                        $("#errorEmail").append("Vui lòng thêm email của nhân viên !");
+                        check = 1;
+                    }
+                }
+                if (field.name === "Password") {
+                    if (isNullOrWhitespace(field.value) === true) {
+                        $("#errorPassword").append("Vui lòng Password !");
+                        check = 1;
+                    }
+                }
+            });
+            if (check == 0) {
+                $.ajax({
+                    url: "/Employee/Save",
+                    type: "POST",
+                    data: saveCondition,
+                    success: function (data) {
+                        console.log(data);
+                        if (data == "1") {
+                            getEmployees(1);
+                        } else {
+                            alert("Lưu không thành công");
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+        function deleteEmployee(id) {
+            $.ajax({
+                url: "/Employee/Delete/" + id,
+                type: "GET",
+                success: function (data) {
+                    if (data == "0") {
+                        alert("Không tìm thấy nhà cung cấp trong hệ thống . Vui lòng thủ lại sau!");
+                    } else {
+                        $("#informationEmployee").empty();
+                        $("#informationEmployee").html(data);
+                    }
+                }
+            });
+        }
+        function confirmDeleteEmployee(id) {
+            $.ajax({
+                url: "/Employee/Delete/" + id,
+                type: "POST",
+                success: function (data) {
+                    if (data == "1") {
+                        getEmployees(1);
+                    } else {
+                        alert("Xoá không thành công");
+                    }
+                }
+            });
+            return false;
+        }
+        $(document).ready(function () {
+            getEmployees(1);
+            $("#formSearchInput").submit(function (e) {
+                e.preventDefault();
+                getEmployees(1);
+            });
+        });
+        
+    </script>
+}
+

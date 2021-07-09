@@ -1,0 +1,91 @@
+﻿@using LiteCommerce.Admin.Helpers;
+@{
+    ViewBag.Title = "Profile";
+}
+<div class="row">
+    @{ 
+        var account = CookieHelper.CookieStringToAccount(User.Identity.Name);
+    }
+    <div class="col-md-4" >
+        <!-- Profile Image -->
+        <div class="box box-primary">
+            <div class="box-body box-profile">
+                <img class="profile-user-img img-responsive img-circle" src="@account.Photo" alt="User profile picture">
+                <h3 class="profile-username text-center">@account.FullName</h3>
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <b>Ngày Sinh</b> <a class="pull-right"> @string.Format("{0: dd/MM/yyyy}", account.BirthDate)</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Email</b> <a class="pull-right">@account.Email</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Ghi Chú</b> <p>@account.Notes</p>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+    <div class="col-md-8" >
+        <div class="nav-tabs-custom" >
+            <div class="tab-content" >
+                <div class="tab-pane" style="display: block;">
+                    <!-- Horizontal Form -->
+                    <div class="box box-info">
+                        <div class="box-header with-border" style="text-align:center;">
+                            <h3 class="box-title">Thay Đổi Mật Khẩu</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <!-- form start -->
+                        <form class="form-horizontal" action="~/Account/Profile" method="POST">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label for="inputEmail3" class="col-sm-3 control-label">Email : </label>
+                                    <div class="col-sm-8">
+                                        <label class="control-label">@account.Email</label>
+                                    </div>
+                                    <br />
+                                    <br />
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputPassword3" class="col-sm-3 control-label">Mật Khẩu Cũ : </label>
+                                    <div class="col-sm-8">
+                                        <input type="password" name="oldpassword" class="form-control" id="inputPassword3" placeholder="OldPassword" required>
+                                    </div>
+                                    <br />
+                                    <br />
+                                    @Html.ValidationMessage("oldpass", new { style = "color:#ff0000;  padding-left: 20px;" })
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputPassword4" class="col-sm-3 control-label">Mật Khẩu Mới : </label>
+
+                                    <div class="col-sm-8">
+                                        <input type="password" name="newpassword" class="form-control" id="inputPassword4" placeholder="NewPassword" required>
+                                    </div>
+                                    <br />
+                                    <br />
+                                    @Html.ValidationMessage("newpass", new { style = "color:#ff0000; padding-left: 20px;" })
+                                </div>
+                                
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer">
+                                <a href="~/Account/Profile" class="btn btn-default">Huỷ</a>
+                                <button type="submit" class="btn btn-info pull-right">Lưu Thay Đổi</button>
+                            </div>
+                            <!-- /.box-footer -->
+                        </form>
+                    </div>
+                </div>
+                <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+        </div>
+        <!-- /.nav-tabs-custom -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->

@@ -1,0 +1,132 @@
+﻿@model LiteCommerce.DomainModels.OrderEX
+@{
+    ViewBag.Title = "Thay đổi thông tin đơn hàng";
+}
+
+<fieldset>
+    <legend>Thông tin mặt hàng</legend>
+    <form method="post" action="~/Order/Save/@Model.OrderID">
+        <div class="form-group">
+            @Html.ValidationSummary()
+        </div>
+        @Html.HiddenFor(m => m.OrderID)
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Tên khách hàng:</label>
+                    @Html.DropDownListFor(m => m.CustomerID, SelectListHelper.Customers(), new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Thời gian đặt hàng:</label>
+                    @Html.TextBoxFor(m => m.OrderTime, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Tên nhân viên:</label>
+                    @Html.DropDownListFor(m => m.EmployeeID, SelectListHelper.Employees(), new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Thời gian tiếp nhận:</label>
+                    @Html.TextBoxFor(m => m.AcceptTime, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Tên nhà vận chuyển:</label>
+                    @Html.DropDownListFor(m => m.ShipperID, SelectListHelper.Shippers(), new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Thời gian vận chuyển:</label>
+                    @Html.TextBoxFor(m => m.ShippedTime, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Thời gian hoàn thành:</label>
+                    @Html.TextBoxFor(m => m.FinishedTime, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Trạng thái:</label>
+                    @Html.DropDownListFor(m => m.Status, SelectListHelper.ListOrderStatus(), new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-save"></i> Lưu dữ liệu
+                </button>
+            </div>
+            <div class="col-md-6 text-right">
+                <a href="~/Order/Index" class="btn btn-warning">
+                    <i class="fa fa-window-close"></i> Bỏ qua
+                </a>
+            </div>
+        </div>
+    </form>
+</fieldset>
+<fieldset>
+    <legend>Danh sách chi tiết đơn hàng</legend>
+    <form action="#" method="post">
+        <div class="container-fluid">
+            <table class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-left">
+                            <button type="submit" class="btn btn-xs btn-danger"> <i class="fa fa-remove"></i></button>
+                        </th>
+                        <th class="col-md-4">Tên mặt hàng</th>
+                        <th class="col-md-3">Số lượng</th>
+                        <th class="col-md-3">Đơn giá</th>
+                        <th class="text-right">
+                            <a href="~/Order/AddOrderDetail/@Model.OrderID" class="btn btn-xs btn-primary">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                    <tr>
+                        <td><input type="checkbox" name="attributeIds" value="@item.OrderDetailID" /></td>
+                        
+                        @foreach(var product in SelectListHelper.Products())
+                        {
+                            if(Convert.ToInt32(product.Value) == item.ProductID)
+                            {
+                                <td>@product.Text</td>
+                            }
+                        }
+                        <td>@item.Quantity</td>
+                        <td>@item.SalePrice</td>
+                        <td class="text-right">
+                            <a href="~/Order/EditOrderdetail/@item.OrderDetailID" class="btn btn-xs btn-info">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            
+                        </td>
+                    </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    </form>
+</fieldset>
+

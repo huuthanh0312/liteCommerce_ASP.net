@@ -1,0 +1,85 @@
+﻿
+@{
+    ViewBag.Title = "Quản lý đơn hàng";
+}
+
+<!-- Form để tìm kiếm -->
+<div class="container-fluid">
+    <form id="formSearchInput">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Trạng thái</label>
+                    <select name="status" class="form-control">
+                        <option value="0" selected>Tất cả trạng thái</option>
+                        @foreach(var item in SelectListHelper.ListOrderStatus())
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    </select>
+                    
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Từ ngày</label>
+                    <input name="orderToDay" type="datetime" class="form-control" placeholder="Từ ngày" value="" />
+                </div>
+               
+            </div>
+            @{ DateTime now = DateTime.Now;}
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Đến ngày</label>
+                <input name="orderFromDay" type="datetime" class="form-control" placeholder="Tới ngày" value="@now.Year/@now.Month/@now.Day" />
+            </div>
+            <span id=" erorrOrderFromDay" class="color:red;"></span>
+        </div>
+        </div>
+
+        <div class="row" style="margin-top:5px">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <input name="searchValue" type="text" class="form-control" placeholder="Nhập tên khách hàng" value="" />
+                    <div class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="glyphicon glyphicon-search"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<div id="informationOrders" class="container-fluid">
+</div>
+
+@section scripts{
+    <script>
+        function getOrders(page) {
+            var searchCondition = $("#formSearchInput").serializeArray();
+            searchCondition.push({ name: "page", value:page });
+            $.ajax({
+                url: "/Order/List",
+                type: "POST",
+                data: searchCondition,
+                success: function (data) {
+                    $("#informationOrders").empty();
+                    $("#informationOrders").html(data);
+                }
+
+            });
+        }
+
+        $(document).ready(function () {
+            getOrders(1);
+            $("#formSearchInput").submit(function (e) {
+                e.preventDefault();
+                getOrders(1);
+            });
+        });
+    </script>
+}
+
+

@@ -1,0 +1,128 @@
+﻿@model LiteCommerce.Admin.Models.ShipperPaginationQueryResult
+<!-- Form để tìm kiếm -->
+<div class="container-fluid">
+    <form id="formSearchInput">
+        <div class="input-group">
+            <input name="searchValue" type="text" class="form-control" placeholder="Nhập tên cần tìm..." value="">
+            <div class="input-group-btn">
+                <button class="btn btn-primary" type="submit">
+                    <i class="glyphicon glyphicon-search"></i> Tìm kiếm
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<br />
+<!-- Form hiển thị dữ liệu-->
+<div id="informationShipper" class="container-fluid"> </div>
+
+@section scripts{
+    <script>
+        function getShippers(page) {
+            var searchCondition = $("#formSearchInput").serializeArray();
+            searchCondition.push({ name: "page", value: page });
+            $.ajax({
+                url: "/Shipper/List",
+                type: "POST",
+                data: searchCondition,
+                success: function (data) {
+                    $("#informationShipper").empty();
+                    $("#informationShipper").html(data);
+                }
+
+            });
+        }
+        function editShipper(id) {
+
+            $.ajax({
+                url: "/Shipper/Edit/" + id,
+                type: "POST",
+                success: function (data) {
+                    if (data == "0") {
+                        alert("Không thể tìm thấy nhà cung cấp trong hệ thống . Vui lòng thủ lại sau!");
+                    } else {
+                        $("#informationShipper").empty();
+                        $("#informationShipper").html(data);
+                    }
+                }
+
+            });
+        }
+        function addShipper() {
+            $.ajax({
+                url: "/Shipper/Add",
+                type: "POST",
+                success: function (data) {
+                    $("#informationShipper").empty();
+                    $("#informationShipper").html(data);
+                }
+
+            });
+        }
+        function saveShipper() {
+            document.getElementById("errorShipperName").innerHTML = "";
+            var saveCondition = $("#formSaveInput").serializeArray();
+            var check = 0;
+            $.each(saveCondition, function (i, field) {
+                if (field.name === "ShipperName") {
+                    if (isNullOrWhitespace(field.value) === true) {
+                        $("#errorShipperName").append("Vui lòng nhập tên nhà vận chuyển!");
+                        check = 1;
+                    }
+                }
+            });
+            if (check == 0) {
+                $.ajax({
+                    url: "/Shipper/Save",
+                    type: "POST",
+                    data: saveCondition,
+                    success: function (data) {
+                        if (data == "1") {
+                            getShippers(1);
+                        } else {
+                            alert("Lưu không thành công");
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+        function deleteShipper(id) {
+            $.ajax({
+                url: "/Shipper/Delete/" + id,
+                type: "GET",
+                success: function (data) {
+                    if (data == "0") {
+                        alert("Không tìm thấy nhà cung cấp trong hệ thống . Vui lòng thủ lại sau!");
+                    } else {
+                        $("#informationShipper").empty();
+                        $("#informationShipper").html(data);
+                    }
+                }
+            });
+        }
+        function confirmDeleteShipper(id) {
+            $.ajax({
+                url: "/Shipper/Delete/" + id,
+                type: "POST",
+                success: function (data) {
+                    if (data == "1") {
+                        getShippers(1);
+                    } else {
+                        alert("Xoá không thành công");
+                    }
+                }
+            });
+            return false;
+        }
+        $(document).ready(function () {
+            getShippers(1);
+            $("#formSearchInput").submit(function (e) {
+                e.preventDefault();
+                getShippers(1);
+            });
+        });
+    </script>
+}
+
+

@@ -1,0 +1,43 @@
+﻿@model LiteCommerce.DomainModels.Order
+@{
+    ViewBag.Title = "Thêm đơn hàng";
+}
+<div class="box box-primary">
+    <div class="box-body">
+        <form method="post" action="~/Order/Save/@Model.OrderID">
+            @Html.HiddenFor(m => m.OrderID)
+            @Html.HiddenFor(m => m.AcceptTime)
+            @Html.HiddenFor(m => m.ShipperID)
+            @Html.HiddenFor(m => m.ShippedTime)
+            @Html.HiddenFor(m => m.FinishedTime)
+            @Html.HiddenFor(m => m.Status)
+            <div class="form-group">
+                <label>Tên khách hàng:</label>
+                @Html.DropDownListFor(m => m.CustomerID, SelectListHelper.Customers(), new { @class = "form-control" })
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Tên nhân viên:</label>
+                    @Html.DropDownListFor(m => m.EmployeeID, SelectListHelper.Employees(), new { @class = "form-control" })
+                </div>
+                <div class="col-md-6">
+                    <label>Ngày đặt hàng:</label>
+                    @Html.TextBoxFor(m => m.OrderTime, new { @class = "form-control" })
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Lưu dữ liệu
+                    </button>
+                </div>
+                <div class="col-md-6 text-right">
+                    <a href="~/Order/Index" class="btn btn-warning">
+                        <i class="fa fa-window-close"></i> Bỏ qua
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

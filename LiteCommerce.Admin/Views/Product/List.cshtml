@@ -1,0 +1,65 @@
+﻿@model IEnumerable<LiteCommerce.DomainModels.Product>
+@{
+    Layout = null;
+}
+<!-- Danh sách hàng hóa -->
+<div class="container-fluid">
+    <div class="text-left">
+        <p>Có tất cả <strong>@ViewBag.RowCount</strong> hàng hóa. Bạn đang ở trang <strong>@ViewBag.Page</strong> trên tổng số <strong>@ViewBag.PageCount</strong> trang.</p>
+    </div>
+    <table class="table table-bordered table-hover table-striped">
+        <thead>
+            <tr>
+                <th class="text-center col-lg-3">Tên hàng hóa</th>
+                <th class="text-center col-lg-1">Ảnh</th>
+                <th class="text-center col-lg-2">Tên nhà cung cấp</th>
+                <th class="text-center col-lg-2">Tên loại hàng</th>
+                <th class="text-center col-lg-2">Đơn vị tính</th>
+                <th class="text-center col-lg-1">Giá</th>
+                <th class="text-center col-lg-1">
+                    <a href="javascript:;" onclick="addProduct()" class="btn btn-xs btn-primary">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td class="text-center">@item.ProductName</td>
+                <td class="text-center"><img src="@item.Photo" width="50" height="50"></td>
+                <td class="text-center">@item.SupplierID</td>
+                <td class="text-center">@item.CategoryID</td>
+                <td class="text-center">@item.Unit</td>
+                <td class="text-center">@item.Price</td>
+                
+                <td class="text-center">
+                    <a href="javascript:;" onclick="editProduct(@item.ProductID)" class="btn btn-xs btn-info">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <a href="javascript:;" onclick="deleteProduct(@item.ProductID)" class="btn btn-xs btn-danger">
+                        <i class="fa fa-remove"></i>
+                    </a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="text-center">
+        <ul class="pagination">
+            @for (int page = 1; page <= ViewBag.PageCount; page++)
+            {
+                if (page == ViewBag.Page)
+                {
+                    <li class="active"><a href="javascript:;">@page</a></li>
+                }
+                else
+                {
+                    <li><a href="javascript:;" onclick="getProducts(@page)">@page</a></li>
+                }
+            }
+        </ul>
+    </div>
+</div>

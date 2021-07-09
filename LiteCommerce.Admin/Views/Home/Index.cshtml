@@ -1,0 +1,96 @@
+﻿@{
+    ViewBag.Title = "Trang chủ";
+}
+
+<div class="row">
+    <div class="col-lg-4 col-xs-8">
+        <!-- small box -->
+        <div class="small-box bg-aqua">
+            <div class="inner">
+                <h3>150</h3>
+                <p>Orders</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-bag"></i>
+            </div>
+            <a href="~/Order/Index" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-4 col-xs-8">
+        <!-- small box -->
+        <div class="small-box bg-primary">
+            <div class="inner">
+                <h3>@ViewBag.countCustomer</h3>
+                <p>Customers</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-person-add"></i>
+            </div>
+            <a href="~/Customer/Index" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-4 col-xs-8">
+        <!-- small box -->
+        <div class="small-box bg-red">
+            <div class="inner">
+                <h3>@ViewBag.countProduct</h3>
+                <p>Products</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="~/Product/Index" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-4 col-xs-8">
+        <!-- small box -->
+        <div class="small-box bg-yellow">
+            <div class="inner">
+                <h3>@ViewBag.countCategory</h3>
+                <p>Categories</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="~/Category/Index" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+
+    <div class="col-lg-4 col-xs-8">
+        <!-- small box -->
+        <div class="small-box bg-green">
+            <div class="inner">
+                <h3>@ViewBag.countSupplier</h3>
+                <p>Suppliers</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="~/Supplier/Index" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-4 col-xs-8">
+        <!-- small box -->
+        <div class="small-box bg-blue">
+            <div class="inner">
+                <h3>@ViewBag.countShipper</h3>
+                <p>Shippers</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-person-add"></i>
+            </div>
+            <a href="~/Shipper/Index" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+   
+</div>
+<!-- /.row -->

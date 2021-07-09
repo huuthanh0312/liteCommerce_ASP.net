@@ -1,0 +1,168 @@
+﻿@model LiteCommerce.DomainModels.ProductEX
+@{
+    Layout = null;
+}
+<div class="text-right">
+    <a href="javascript:;" onclick="getProducts()">[Quay lại danh mục mặt hàng]</a>
+</div>
+<fieldset>
+    <div class="box box-primary">
+        <div class="box-header">
+            <h3 class="box-title">Thông tin mặt hàng</h3>
+        </div>
+        <div class="box-body">
+            <form id="formSaveInput" onsubmit="return saveProduct();">
+                @Html.HiddenFor(m => m.ProductID)
+                <div class="form-group">
+                    <label>Tên mặt hàng:</label>
+                    @Html.TextBoxFor(m => m.ProductName, new { @class = "form-control", @autofocus = "autofocus" })
+                    <span id="errorProductName" style="color:red;"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Nhà cung cấp:</label>
+                            @Html.DropDownListFor(m => m.SupplierID, SelectListHelper.ParentSuppliers(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Loại hàng:</label>
+                            @Html.DropDownListFor(m => m.CategoryID, SelectListHelper.ParentCategoties(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Đơn vị tính:</label>
+                            @Html.TextBoxFor(m => m.Unit, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Giá:</label>
+                            @Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Ảnh:</label>
+                    @Html.TextBoxFor(m => m.Photo, new { @class = "form-control" })
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-save"></i> Lưu dữ liệu
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</fieldset>
+<fieldset>
+    <div class="box box-success">
+        <div class="box-header">
+            <h3 class="box-title">Thuộc tính của mặt hàng</h3>
+        </div>
+        <div class="box-body">
+            <form id="formDeleteAttributes" onsubmit="return confirmDeleteProductAttributes(@Model.ProductID);">
+                <table class="table table-bordered table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center col-lg-1">
+                                <button type="submit" class=" btn btn-xs btn-danger">
+                                    <i class="fa fa-remove"></i>
+                                </button>
+                            </th>
+                            <th class="col-lg-5">Tên Thuộc Tính</th>
+                            <th class="col-lg-5">Giá Trị Thuộc Tính</th>
+                            @*<th class="text-center col-lg-2">Trạng Thái</th>*@
+                            <th class="text-center text-right col-lg-1">
+                                <a href="javascript:;" onclick="addProductAttributes(@Model.ProductID)" class="btn btn-xs btn-primary">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Attributes)
+                        {
+                        <tr>
+                            <td class="text-center"><input type="checkbox" name="attributeIds" value="@item.AttributeID" /></td>
+                            <td ><p>@item.AttributeName </p></td>
+                            <td >@item.AttributeValue</td>
+                            @*<td class="text-center">@item.DisplayOrder</td>*@
+                            <td class="text-center">
+                                <a href="javascript:;" onclick="editProductAttributes(@item.AttributeID)" class="btn btn-xs btn-info">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                               
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+                
+            </form>
+        </div>
+    </div>
+</fieldset>
+<fieldset>
+    <div class="box box-info">
+        <div class="box-header">
+            <h3 class="box-title">Thư viện hình ảnh</h3>
+        </div>
+        <div class="box-body">
+            <form id="formDeleteGallery" onsubmit="return confirmDeleteProductGallery(@Model.ProductID);">
+                <table class="table table-bordered table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center col-lg-1">
+                                <button type="submit" class="btn btn-xs btn-danger">
+                                    <i class="fa fa-remove"></i>
+                                </button>
+                            </th>
+                            <th class="text-center col-lg-2">Ảnh</th>
+                            <th class="text-center col-lg-4">Mô Tả</th>
+                            <th class="text-center col-lg-4">Trạng Thái</th>
+                            @*<th class="text-center col-lg-2">Ishidden</th>*@
+                            <th class="text-center text-right col-lg-1">
+                                <a href="javascript:;" onclick="addProductGallery(@Model.ProductID)" class="btn btn-xs btn-primary">    
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Galleries)
+                        {
+                        <tr>
+                            <td class="text-center"><input type="checkbox" name="galleryIds" value="@item.GalleryID" /></td>
+                            <td class="text-center"><img src="@item.Photo" width="50" height="50"></td>
+                            <td class="text-center">@item.Description</td>
+                            @*<td class="text-center">@item.DisplayOrder</td>*@
+                            @if(item.IsHidden == 1) 
+                                {<td class="text-center">Hiển Thị </td>}
+                            else {<td class="text-center">Ẩn </td>}
+                                
+                            <td class="text-center">
+                                <a href="javascript:;" onclick="editProductGallery(@item.GalleryID)" class="btn btn-xs btn-info">
+                                    <i class="fa fa-edit"></i>
+                                </a>  
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</fieldset>
+
+
+
+
+

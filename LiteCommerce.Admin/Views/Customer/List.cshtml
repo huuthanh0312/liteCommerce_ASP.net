@@ -1,0 +1,65 @@
+﻿@model LiteCommerce.Admin.Models.CustomerPaginationQueryResult
+@{
+    Layout = null;
+}
+<div class="container-fluid">
+    <div class="text-left">
+        <p>Có tất cả <strong>@Model.RowCount</strong> khách hàng. Bạn đang ở trang <strong>@Model.Page</strong> trên tổng số <strong>@Model.PageCount</strong> trang.</p>
+    </div>
+    <table class="table table-bordered table-hover table-striped">
+        <thead>
+            <tr>
+                <th class=" col-lg-3">Tên khách hàng</th>
+                <th class=" col-lg-2">Tên giao dịch</th>
+                <th class="col-lg-2">Địa chỉ</th>
+                <th class="col-lg-1">Quốc gia</th>
+                <th class="col-lg-1">Thành phố</th>
+                <th class="col-lg-1">Mã vùng</th>
+                <th class="col-lg-1">Email</th>
+                <th class="text-right col-lg-1">
+                    <a href="javascript:;" onclick="addCustomer()" class="btn btn-xs btn-primary">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Item in Model.Data)
+            {
+                <tr>
+                    <td>@Item.CustomerName</td>
+                    <td>@Item.ContactName</td>
+                    <td>@Item.Address</td>
+                    <td>@Item.Country</td>
+                    <td>@Item.City</td>
+                    <td>@Item.PostalCode</td>
+                    <td>@Item.Email</td>
+                    <td class="text-right">
+                        <a href="javascript:;" onclick="editCustomer(@Item.CustomerID)" class="btn btn-xs btn-info">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <a href="javascript:;" onclick="deleteCustomer(@Item.CustomerID)" class="btn btn-xs btn-danger">
+                            <i class="fa fa-remove"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="text-center">
+        <ul class="pagination">
+            @for (int page = 1; page <= Model.PageCount; page++)
+            {
+                if (page == Model.Page)
+                {
+                    <li class="active"><a href="javascript:;">@page</a></li>
+                }
+                else
+                {
+                    <li><a href="javascript:;" onclick="getCustomers(@page)">@page</a></li>
+                }
+            }
+        </ul>
+    </div>
+</div>

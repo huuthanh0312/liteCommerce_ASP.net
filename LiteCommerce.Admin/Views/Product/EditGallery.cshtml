@@ -1,0 +1,55 @@
+﻿@model LiteCommerce.DomainModels.ProductGallery
+@{
+    Layout = null;
+}
+
+<div class="box box-primary">
+    <div class="box-header">
+        <h3 class="box-title">Thêm hình ảnh của mặt hàng</h3>
+    </div>
+    <div class="box-body">
+        <form id="formSaveInput" onsubmit="return saveProductGallery(@Model.ProductID);">
+            @Html.HiddenFor(m => m.GalleryID)
+            @Html.HiddenFor(m => m.ProductID)
+            <div class="form-group">
+                <label>Ảnh:</label>
+                @Html.TextBoxFor(m => m.Photo, new { @class = "form-control", @autofocus = "autofocus" })
+                <span style="color:red;" id="errorPhoto"></span>
+            </div>
+            <div class="form-group">
+                <label>Mô Tả: </label>
+                @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>DisplayOrder:</label>
+                        @Html.TextBoxFor(m => m.DisplayOrder, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Trạng thái:</label>
+                        <select name="IsHidden" class="form-control" id="IsHidden">
+                            <option value="0">Ẩn</option>
+                            <option value="1">Hiển thị</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Lưu dữ liệu
+                    </button>
+                </div>
+                <div class="col-md-6 text-right">
+                    <a href="javascript:;" onclick="editProduct(@Model.ProductID)" class="btn btn-warning">
+                        <i class="fa fa-window-close"></i> Bỏ qua
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+

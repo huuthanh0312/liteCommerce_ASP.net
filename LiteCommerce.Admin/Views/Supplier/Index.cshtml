@@ -1,0 +1,136 @@
+﻿@{
+    ViewBag.Title = "Quản lý nhà cung cấp";
+}
+<!-- Form để tìm kiếm -->
+<div class="container-fluid">
+    <form id="formSearchInput">
+        <div class="input-group">
+            <input name="searchValue" type="text" class="form-control" placeholder="Nhập tên cần tìm..." value="">
+            <div class="input-group-btn">
+                <button class="btn btn-primary" type="submit">
+                    <i class="glyphicon glyphicon-search"></i> Tìm kiếm
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<br />
+<!-- Danh sách nhà cung cấp -->
+<div id="informationSupplier" class="container-fluid"> </div>
+
+@section scripts{
+    <script>
+        function getSuppliers(page) {
+            var searchCondition = $("#formSearchInput").serializeArray();
+            searchCondition.push({ name: "page", value: page });
+            $.ajax({
+                url: "/Supplier/List",
+                type: "POST",
+                data: searchCondition,
+                success: function (data) {
+                    $("#informationSupplier").empty();
+                    $("#informationSupplier").html(data);
+                }
+
+            });
+        }
+        function editSupplier(id) {
+            
+            $.ajax({
+                url: "/Supplier/Edit/"+id,
+                type: "POST",
+                success: function (data) {
+                    if (data == "0") {
+                        alert("Không thể tìm thấy nhà cung cấp trong hệ thống . Vui lòng thủ lại sau!");
+                    } else {
+                        $("#informationSupplier").empty();
+                        $("#informationSupplier").html(data);
+                    }
+                }
+
+            });
+        }
+        function addSupplier() {       
+            $.ajax({
+                url: "/Supplier/Add",
+                type: "POST",
+                success: function (data) {
+                    $("#informationSupplier").empty();
+                    $("#informationSupplier").html(data);
+                }
+
+            });
+        }
+        function saveSuppliers() {            
+            document.getElementById("errorSupplierName").innerHTML = "";
+            document.getElementById("errorContactName").innerHTML = "";
+            var saveCondition = $("#formSaveInput").serializeArray();
+            var check = 0;
+            $.each(saveCondition, function (i, field) {
+                if (field.name === "SupplierName") {
+                    if (isNullOrWhitespace(field.value) === true) {
+                        $("#errorSupplierName").append("Vui lòng nhập nhà cung cấp!");
+                        check = 1;
+                    }
+                }
+                if (field.name === "ContactName") {
+                    if (isNullOrWhitespace(field.value) === true) {
+                        $("#errorContactName").append("Vui lòng nhập tên giao dịch!");
+                        check = 1;
+                    }
+                }
+            });
+            if (check == 0) {
+                $.ajax({
+                    url: "/Supplier/Save",
+                    type: "POST",
+                    data: saveCondition,
+                    success: function (data) {
+                        console.log(data);
+                        if (data == "1") {
+                            getSuppliers(1);
+                        } else {
+                            alert("Lưu không thành công");
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+        function deleteSupplier(id) {
+            $.ajax({
+                url: "/Supplier/Delete/"+id,
+                type: "GET",
+                success: function (data) {
+                    if (data == "0") {
+                        alert("Không tìm thấy nhà cung cấp trong hệ thống . Vui lòng thủ lại sau!");
+                    } else {
+                        $("#informationSupplier").empty();
+                        $("#informationSupplier").html(data);
+                    }
+                }
+            });
+        }
+        function confirmDeleteSupplier(id) {
+            $.ajax({
+                url: "/Supplier/Delete/" + id,
+                type: "POST",
+                success: function (data) {
+                    if (data == "1") {
+                        getSuppliers(1);
+                    } else {                        
+                        alert("Xoá không thành công");
+                    }
+                }
+            });
+            return false;
+        }
+        $(document).ready(function () {       
+            getSuppliers(1);
+            $("#formSearchInput").submit(function (e) {
+                e.preventDefault();
+                getSuppliers(1);
+            });
+        });
+    </script>
+}
